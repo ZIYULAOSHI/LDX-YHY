@@ -1,0 +1,1245 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#112639" />
+    <title>量研 · 策略研究工作台</title>
+    <link rel="stylesheet" href="./styles.css?v=20261112m" />
+    <link rel="stylesheet" href="./platform.css?v=20261119b" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳转到主内容</a>
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">∿</div>
+        <div>
+          <strong>量研<span>策略研究工作台</span></strong>
+          <small>QUANT RESEARCH WORKBENCH</small>
+        </div>
+      </div>
+      <nav class="topbar-section topbar-nav" aria-label="平台导航">
+        <div class="topbar-divider" aria-hidden="true"></div>
+        <a href="./index.html" class="topbar-nav-item active" aria-current="page"
+          ><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="16 18 22 12 16 6" />
+            <polyline points="8 6 2 12 8 18" />
+          </svg>
+          指标工作台</a
+        >
+        <a href="./admin.html" class="topbar-nav-item"
+          ><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+          </svg>
+          指标管理</a
+        >
+      </nav>
+      <div class="topbar-right">
+        <span class="local-service"><i class="connected" aria-hidden="true"></i>本地工作区</span>
+        <label class="identity-switch" title="原型演示：切换身份查看不同角色的可用操作">
+          <span>当前身份</span>
+          <select id="identity-select" aria-label="切换演示身份"></select>
+        </label>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <div class="page-heading">
+        <div>
+          <div class="eyebrow">RESEARCH / FORMULA LAB</div>
+          <h1>让研究假设，成为可检验的策略。</h1>
+          <p>本页为前端可交互原型：行情与回测结果为模拟数据，用于验证交互与信息架构。</p>
+        </div>
+        <div class="heading-actions">
+          <span class="privacy-note">
+            <span class="heading-dot" aria-hidden="true"></span>
+            不向公网发送您的公式草稿；导出与协作请使用团队约定流程。
+          </span>
+        </div>
+      </div>
+
+      <!-- 行情工具栏 -->
+      <section class="panel market-toolbar" data-layout="wide" aria-label="行情与数据">
+          <div class="market-cluster market-cluster-primary">
+          <div class="toolbar-section-label">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M4 19V5" />
+              <path d="M8 19V9" />
+              <path d="M12 19V12" />
+              <path d="M16 19V7" />
+              <path d="M20 19V14" />
+              <path d="M3 19h18" />
+            </svg>
+            标的设置
+          </div>
+        <div class="field symbol-field symbol-search-wrap">
+          <span>证券代码</span>
+          <div class="symbol-search-field">
+            <input
+              type="text"
+              id="input-symbol"
+              value="000001.SZ"
+              maxlength="40"
+              autocomplete="off"
+              spellcheck="false"
+              role="combobox"
+              aria-expanded="false"
+              aria-controls="symbol-search-list"
+              aria-autocomplete="list"
+            />
+            <ul id="symbol-search-list" class="symbol-search-list" role="listbox" hidden></ul>
+          </div>
+        </div>
+          <div class="field mode-field market-scope-field">
+            <span>数据选项</span>
+            <select id="select-market-data-scope">
+              <option value="default" selected>默认（推荐）</option>
+              <option value="listing">上市以来</option>
+              <option value="range">指定区间</option>
+            </select>
+          </div>
+          </div>
+          <div class="market-cluster market-cluster-range market-range-fields" id="market-range-fields" hidden>
+            <div class="field">
+              <span>开始日期</span>
+              <input type="date" id="input-date-start" />
+            </div>
+            <span class="date-separator" aria-hidden="true">—</span>
+            <div class="field date-end-field">
+              <span>结束日期</span>
+              <div class="date-end-wrap" id="date-end-wrap">
+                <input type="date" id="input-date-end" />
+                <span class="date-today-badge" id="date-end-today-badge" hidden aria-hidden="true">今天</span>
+              </div>
+            </div>
+          </div>
+          <div class="market-cluster market-cluster-actions">
+          <div class="field mode-field market-stream-field">
+            <span>行情类型</span>
+            <select id="select-market-stream">
+              <option value="static" selected>静态行情</option>
+              <option value="dynamic">动态行情</option>
+            </select>
+          </div>
+          <button type="button" class="primary market-load" id="btn-load-market">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+              <path d="M21 3v5h-5" />
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+              <path d="M8 16H3v5" />
+            </svg>
+            读取行情
+          </button>
+          </div>
+          <div class="mode-indicator" id="mode-indicator" data-mode="pending">
+            <span><span class="mode-dot" aria-hidden="true"></span><span id="mode-indicator-title">行情来源</span></span>
+            <small id="mode-indicator-sub">未读取行情 · 调整标的后请点击「读取行情」</small>
+          </div>
+        <p class="market-scope-hint muted small" id="market-scope-hint" hidden>
+          上市以来、指定区间仅支持日线及以上周期；分钟级仍按默认 500 根加载。
+        </p>
+      </section>
+
+      <!-- 公式 + 图表 -->
+      <div class="workspace-grid" id="workspace-grid">
+        <section class="panel formula-panel" id="formula-panel">
+          <div class="panel-heading">
+            <div class="panel-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polyline points="16 18 22 12 16 6" />
+                <polyline points="8 6 2 12 8 18" />
+              </svg>
+              <h2>公式工作区</h2>
+            </div>
+            <div class="formula-heading-tools" id="formula-heading-tools" hidden aria-hidden="true">
+              <label class="formula-dialect-label" for="select-formula-dialect">语法模式</label>
+              <select id="select-formula-dialect" class="formula-dialect-select" aria-label="公式语法模式">
+                <option value="my" hidden>麦语言</option>
+                <option value="tdx" selected>通达信</option>
+              </select>
+            </div>
+          </div>
+          <div class="formula-toolbar formula-toolbar-v2" data-layout="wide">
+            <div class="formula-cluster formula-cluster-ops">
+              <button type="button" class="primary btn-sm" id="btn-new-formula">新建公式</button>
+              <button type="button" class="btn-sm" id="btn-pick-formula">编辑公式</button>
+              <button type="button" class="btn-sm" id="btn-insert-fn" title="Ctrl+I">插入函数</button>
+              <button type="button" class="btn-sm btn-import-indicator" id="btn-import-indicator" hidden>引入指标</button>
+            </div>
+            <div class="formula-cluster formula-cluster-plot">
+              <label class="plot-draw-label" for="select-plot-draw-method">画线方法</label>
+              <select id="select-plot-draw-method" class="plot-draw-select" aria-label="画线方法">
+                <option value="main" selected>主图</option>
+                <option value="sub">副图</option>
+                <option value="main_axis">主图独立坐标</option>
+              </select>
+            </div>
+            <div class="formula-cluster formula-cluster-save">
+              <button type="button" class="primary btn-sm" id="btn-save-workspace">保存</button>
+              <button type="button" class="btn-sm" id="btn-save-as-workspace">另存为</button>
+            </div>
+          </div>
+          <div class="formula-toolbar-legacy" hidden aria-hidden="true">
+            <select id="select-formula-kind">
+              <option value="builtin" selected>内置指标策略</option>
+              <option value="custom">自定义公式</option>
+            </select>
+            <select id="select-formula-template" aria-label="公式或指标模板"></select>
+          </div>
+          <div class="editor-filebar">
+            <div class="editor-filebar-main">
+              <span class="editor-filebar-label mono" id="editor-filebar-label" title="">未命名公式</span>
+              <button type="button" class="indicator-chip" id="filebar-indicator-chip" data-tone="none">未登记为指标</button>
+              <button
+                type="button"
+                class="icon-button editor-filebar-gear"
+                id="btn-formula-meta"
+                title="编辑公式名称与参数"
+                aria-label="编辑公式名称与参数"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="editor-host" id="editor-host">
+            <div class="code-wrap" id="code-wrap">
+              <div class="code-gutter" id="code-gutter" aria-hidden="true">1</div>
+              <div class="code-area">
+                <pre id="formula-highlight" aria-hidden="true"></pre>
+                <textarea
+                  id="textarea-formula"
+                  spellcheck="false"
+                  aria-label="通达信公式编辑器"
+                  autocapitalize="off"
+                  autocomplete="off"
+                  autocorrect="off"
+                ></textarea>
+              </div>
+            </div>
+            <div class="formula-editor-statusbar">
+              <span class="hint" id="formula-caret-hint">鼠标悬停函数名查看说明；输入缩写可联想，Enter 补全</span>
+              <span class="muted" id="formula-caret-pos">行 1，列 1</span>
+            </div>
+            <div class="builtin-placeholder" id="builtin-placeholder" hidden>
+              <span class="builtin-icon" aria-hidden="true">{ }</span>
+              <h3 id="builtin-title">MACD</h3>
+              <p id="builtin-desc">
+                使用服务内置指标实现；参数请在下方「策略回测 › 公式参数」中调整。<br />
+                回测需公式调用 BUY(条件,位置) 与 SELL(条件,位置)（自定义公式时）。
+              </p>
+              <span class="tag teal" id="builtin-params-tag">3 个声明参数</span>
+            </div>
+          </div>
+          <p class="sr-only" id="formula-draft-saved-hint" aria-live="polite"></p>
+          <section class="formula-syntax-panel" id="formula-syntax-panel" aria-label="语法检测">
+            <header class="formula-syntax-head">
+              <strong>语法检测</strong>
+              <span class="muted" id="formula-syntax-summary">等待检测</span>
+            </header>
+            <ul class="formula-syntax-list" id="formula-syntax-list">
+              <li class="hint">点击「校验公式」进行语法检测</li>
+            </ul>
+          </section>
+          <ul class="diagnostics" id="formula-diagnostics" hidden></ul>
+          <div class="formula-actions">
+            <button type="button" id="btn-validate-formula">校验公式</button>
+            <button type="button" class="primary" id="btn-submit-chart">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
+                提交绘图
+              </button>
+            <span class="formula-actions-sep" aria-hidden="true"></span>
+            <button type="button" class="publish-button" id="btn-publish" title="保存为指标版本，进入审核 → 研发接入 → 上架流程">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 19V5" />
+                <path d="M5 12l7-7 7 7" />
+              </svg>
+              提交发布
+            </button>
+          </div>
+        </section>
+
+        <section class="panel chart-panel" id="chart-panel" data-layout="wide">
+          <div class="panel-heading chart-panel-heading">
+            <div class="panel-title chart-heading-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10" />
+                <line x1="12" y1="20" x2="12" y2="4" />
+                <line x1="6" y1="20" x2="6" y2="14" />
+              </svg>
+              <h2>行情与策略图表</h2>
+            </div>
+            <div class="chart-heading-quote" id="chart-heading-quote">
+              <span class="chart-symbol" id="chart-symbol-display">
+                <span id="chart-symbol-name" class="chart-symbol-name">平安银行</span>
+                <span id="chart-symbol-code" class="mono">000001.SZ</span>
+              </span>
+              <div class="ohlc" id="chart-ohlc">
+                <span>开 <b>—</b></span>
+                <span>高 <b>—</b></span>
+                <span>低 <b>—</b></span>
+                <span>收 <b>—</b></span>
+              </div>
+            </div>
+          </div>
+          <div class="market-chart">
+            <div class="chart-loading" id="chart-loading" hidden>正在绘制…</div>
+            <span class="sr-only" id="chart-last-date"></span>
+            <div class="chart-period-toolbar">
+              <div class="chart-cluster chart-cluster-period">
+                <div class="chart-period-switch" role="group" aria-label="K 线周期">
+                  <button type="button" data-chart-period="1m" aria-pressed="false">1min</button>
+                  <button type="button" data-chart-period="5m" aria-pressed="false">5min</button>
+                  <button type="button" data-chart-period="10m" aria-pressed="false">10min</button>
+                  <button type="button" data-chart-period="30m" aria-pressed="false">30min</button>
+                  <button type="button" data-chart-period="1h" aria-pressed="false">1hour</button>
+                  <button type="button" class="active" data-chart-period="day" aria-pressed="true">日线</button>
+                  <button type="button" data-chart-period="week" aria-pressed="false">周线</button>
+                  <button type="button" data-chart-period="month" aria-pressed="false">月线</button>
+                  <button type="button" data-chart-period="year" aria-pressed="false">年线</button>
+                </div>
+              </div>
+              <div class="chart-toolbar-trailing">
+                <div class="chart-adj-switch" role="group" aria-label="复权方式">
+                  <button type="button" class="active" data-chart-adj="qfq" aria-pressed="true">前复权</button>
+                  <button type="button" data-chart-adj="hfq" aria-pressed="false">后复权</button>
+                  <button type="button" data-chart-adj="none" aria-pressed="false">除权</button>
+                </div>
+                <button type="button" class="icon-button chart-cluster-refresh" id="btn-chart-refresh" title="重置图表：清除主/副图指标与公式绘图加载状态（不改动公式编辑与校验）" aria-label="重置图表">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                    <path d="M21 3v5h-5" />
+                    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                    <path d="M8 16H3v5" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="plot-legend chart-formula-legend" id="plot-legend">
+              <span class="plot-legend-title mono" id="plot-legend-title"></span>
+              <div class="plot-legend-items" id="plot-legend-items">
+                <span class="plot-legend-hint muted">提交绘图后显示各输出变量数值</span>
+              </div>
+              <div class="plot-legend-tools">
+                <button
+                  type="button"
+                  class="plot-legend-text-link"
+                  id="btn-chart-ind-picker-main"
+                  aria-haspopup="dialog"
+                  aria-controls="chart-ind-picker-mask"
+                >
+                  选择指标
+                </button>
+                <button
+                  type="button"
+                  class="plot-legend-gear"
+                  id="btn-chart-mount-main-params"
+                  hidden
+                  title="指标参数"
+                  aria-label="主图指标参数"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="chart-host chart-stage" id="chart-stage">
+              <div class="chart-pane-stack">
+                <div class="chart-main-pane">
+                  <canvas id="chart-canvas-main" height="240" aria-label="K 线主图"></canvas>
+                </div>
+                <div class="chart-sub-box" id="chart-sub-box" hidden>
+                  <canvas id="chart-canvas-sub" height="130" aria-label="指标副图"></canvas>
+                </div>
+                <div class="chart-vol-box" id="chart-vol-box">
+                  <div class="chart-pane-head chart-lower-head" id="chart-lower-head" aria-hidden="false">
+                    <span class="chart-pane-title" id="chart-lower-pane-title">成交量</span>
+                    <span class="chart-pane-tag" id="chart-lower-pane-tag">VOL</span>
+                    <div class="chart-lower-legend" id="plot-sub-legend">
+                      <span class="plot-legend-title mono" id="plot-sub-legend-title"></span>
+                      <div class="plot-legend-items" id="plot-sub-legend-items"></div>
+                    </div>
+                    <div class="plot-legend-tools plot-legend-tools--sub">
+                      <button
+                        type="button"
+                        class="plot-legend-text-link"
+                        id="btn-chart-ind-picker-sub"
+                        aria-haspopup="dialog"
+                        aria-controls="chart-ind-picker-mask"
+                      >
+                        选择指标
+                      </button>
+                      <button
+                        type="button"
+                        class="plot-legend-gear"
+                        id="btn-chart-mount-sub-params"
+                        hidden
+                        title="指标参数"
+                        aria-label="副图指标参数"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <circle cx="12" cy="12" r="3" />
+                          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <canvas id="chart-canvas-vol" height="88" aria-label="成交量"></canvas>
+                </div>
+              </div>
+              <div class="chart-crosshair" id="chart-crosshair" hidden>
+                <div class="chart-crosshair-v"></div>
+                <div class="chart-crosshair-h"></div>
+              </div>
+              <div class="chart-hover-tip" id="chart-hover-tip" hidden aria-hidden="true"></div>
+              <div class="chart-placeholder" id="chart-placeholder">
+                <strong>尚未加载行情</strong>
+              </div>
+            </div>
+            <div class="chart-time-foot" id="chart-time-foot">
+              <canvas id="chart-canvas-time" height="26" aria-label="时间横轴"></canvas>
+              <div class="chart-crosshair-badge chart-crosshair-badge--time" id="crosshair-label-time" hidden></div>
+            </div>
+            <div class="chart-crosshair-badge chart-crosshair-badge--price" id="crosshair-label-price" hidden></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- 研究区：策略回测 → 参数优化 → 优化结果 → 研究历史 -->
+      <section class="panel research-panel" id="research-panel">
+        <div class="research-tabbar">
+          <div class="tabs" role="tablist" aria-label="研究工作台">
+            <button type="button" role="tab" id="tab-backtest" aria-selected="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 3v18h18" />
+                <path d="M7 15l4-4 3 3 5-6" />
+              </svg>
+              策略回测
+            </button>
+            <button type="button" role="tab" id="tab-config" aria-selected="false">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+              </svg>
+              参数优化
+            </button>
+            <button type="button" role="tab" id="tab-results" aria-selected="false">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 3h6v6H9zM9 15h6v6H9zM15 9h6v6h-6zM3 9h6v6H3z" />
+              </svg>
+              优化结果 <span class="count" id="count-results">0</span>
+            </button>
+            <button type="button" role="tab" id="tab-history" aria-selected="false">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 6v6l4 2" />
+              </svg>
+              研究历史 <span class="count" id="count-history">0</span>
+            </button>
+          </div>
+          <ol class="flow-steps" aria-label="推荐流程">
+            <li>校验公式并在 K 线上核对信号</li>
+            <li>当前参数回测</li>
+            <li>满意即保存；不满意再参数优化</li>
+          </ol>
+        </div>
+
+        <div class="run-progress" id="run-progress" hidden>
+          <span class="run-progress-label"
+            ><span class="status-dot pulsing" aria-hidden="true"></span>
+            <span id="run-progress-label">研究进行中…</span></span
+          >
+          <div class="progress-track" aria-hidden="true"><span id="run-progress-bar" style="width: 0%"></span></div>
+          <button type="button" id="btn-cancel-run" class="danger-button">取消任务</button>
+        </div>
+
+        <div class="research-context" id="research-context">
+          <div class="research-capability" id="research-capability" data-state="pending">
+            <strong id="research-capability-title">等待识别公式能力</strong>
+            <span id="research-capability-desc"></span>
+          </div>
+          <p class="research-dataset muted small" id="research-dataset-line"></p>
+        </div>
+
+        <!-- 策略回测 -->
+        <div class="research-pane" id="pane-backtest" role="tabpanel">
+          <section class="flow-section">
+            <header class="flow-head">
+              <span class="flow-no">1</span>
+              <div>
+                <h3>公式参数</h3>
+                <p class="muted small" id="param-def-hint"></p>
+              </div>
+            </header>
+            <div class="table-scroll">
+              <table class="parameter-table">
+                <thead>
+                  <tr>
+                    <th>参数 / 类型</th>
+                    <th>当前值</th>
+                    <th>最小值</th>
+                    <th>最大值</th>
+                    <th>步长</th>
+                  </tr>
+                </thead>
+                <tbody id="param-def-tbody"></tbody>
+              </table>
+            </div>
+            <ul class="research-errors" id="param-def-errors" hidden></ul>
+          </section>
+
+          <div class="pane-footer plot-only-footer">
+            <span class="muted small" id="plot-only-save-hint"></span>
+            <button type="button" class="primary" id="btn-plot-only-save">保存公式</button>
+          </div>
+
+          <section class="flow-section research-only" id="backtest-conditions">
+            <header class="flow-head">
+              <span class="flow-no">2</span>
+              <div>
+                <h3>回测条件</h3>
+                <p class="muted small">参数优化沿用同一套条件，不需要重复设置</p>
+              </div>
+            </header>
+            <div class="cond-grid">
+              <div class="cond-block">
+                <div class="cond-title"><h4>资金与成本</h4><span class="muted small" id="fee-hint"></span></div>
+                <div class="fields four">
+                  <label class="field">
+                    <span>初始资金（元）</span>
+                    <input type="number" id="exec-capital" min="1000" step="1000" value="100000" />
+                  </label>
+                  <label class="field" title="BUY 信号按「可用资金 × 持仓上限」开仓，SELL 信号全部平仓；不支持按手数设置">
+                    <span>持仓上限</span>
+                    <div class="number-input with-unit">
+                      <input type="number" id="exec-position" min="1" max="100" value="100" />
+                      <span>%</span>
+                    </div>
+                  </label>
+                  <label class="field">
+                    <span>佣金费率（双向）</span>
+                    <div class="number-input with-unit">
+                      <input type="number" id="exec-commission" step="0.001" min="0" value="0.025" />
+                      <span>%</span>
+                    </div>
+                  </label>
+                  <label class="field">
+                    <span>最低佣金（元/笔）</span>
+                    <input type="number" id="exec-min-commission" step="1" min="0" value="5" />
+                  </label>
+                  <label class="field">
+                    <span>印花税（卖出）</span>
+                    <div class="number-input with-unit">
+                      <input type="number" id="exec-stamp" disabled />
+                      <span>%</span>
+                    </div>
+                  </label>
+                  <label class="field">
+                    <span>过户费（双向）</span>
+                    <div class="number-input with-unit">
+                      <input type="number" id="exec-transfer" disabled />
+                      <span>%</span>
+                    </div>
+                  </label>
+                  <label class="field">
+                    <span>滑点比例</span>
+                    <div class="number-input with-unit">
+                      <input type="number" id="exec-slippage" step="0.01" min="0" value="0.1" />
+                      <span>%</span>
+                    </div>
+                  </label>
+                  <label class="field">
+                    <span>成交价格</span>
+                    <select id="exec-fill-mode">
+                      <option value="next_open" selected>信号次根开盘价</option>
+                      <option value="close">信号当根收盘价</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+              <div class="cond-block">
+                <div class="cond-title"><h4>交易规则</h4><span class="tag teal" id="rules-instrument-tag">—</span></div>
+                <dl class="rules-grid" id="rules-grid"></dl>
+                <label class="check-label">
+                  <input type="checkbox" id="rules-limit" checked />
+                  涨停不买入、跌停不卖出（顺延至可成交的 K 线）
+                </label>
+              </div>
+            </div>
+
+            <div class="cond-block risk-panel" id="risk-panel">
+              <div class="cond-title">
+                <label class="check-label risk-master">
+                  <input type="checkbox" id="research-risk" />
+                  <strong>启用风控</strong>
+                  <span class="muted">止损止盈按 K 线逐根判断</span>
+                </label>
+                <label class="field inline-field">
+                  <span>触发口径</span>
+                  <select id="risk-trigger">
+                    <option value="close">收盘价触发 · 下一根开盘执行</option>
+                    <option value="intraday">盘中触价 · 按触发价成交</option>
+                  </select>
+                </label>
+              </div>
+              <div class="risk-rules" id="risk-rules">
+                <div class="risk-rule" data-rule="fixedStop">
+                  <label class="check-label"><input type="checkbox" data-risk-on="fixedStop" checked /><strong>固定止损</strong></label>
+                  <p>亏损达到
+                    <span class="number-input with-unit inline"><input type="number" data-risk="fixedStop.pct" value="5" min="0.1" step="0.5" /><span>%</span></span>
+                    卖出</p>
+                </div>
+                <div class="risk-rule" data-rule="fixedTake">
+                  <label class="check-label"><input type="checkbox" data-risk-on="fixedTake" checked /><strong>固定止盈</strong></label>
+                  <p>盈利达到
+                    <span class="number-input with-unit inline"><input type="number" data-risk="fixedTake.pct" value="15" min="0.1" step="1" /><span>%</span></span>
+                    卖出</p>
+                </div>
+                <div class="risk-rule" data-rule="trailStop">
+                  <label class="check-label"><input type="checkbox" data-risk-on="trailStop" /><strong>移动止损</strong></label>
+                  <p>自持仓期最高价回落
+                    <span class="number-input with-unit inline"><input type="number" data-risk="trailStop.pct" value="8" min="0.1" step="0.5" /><span>%</span></span>
+                    卖出</p>
+                </div>
+                <div class="risk-rule" data-rule="trailTake">
+                  <label class="check-label"><input type="checkbox" data-risk-on="trailTake" /><strong>移动止盈</strong></label>
+                  <p>盈利达到
+                    <span class="number-input with-unit inline"><input type="number" data-risk="trailTake.activate" value="10" min="0.1" step="1" /><span>%</span></span>
+                    后启动跟踪，自最高价回落
+                    <span class="number-input with-unit inline"><input type="number" data-risk="trailTake.callback" value="3" min="0.1" step="0.5" /><span>%</span></span>
+                    卖出</p>
+                </div>
+                <div class="risk-rule" data-rule="breakeven">
+                  <label class="check-label"><input type="checkbox" data-risk-on="breakeven" /><strong>保本止损</strong></label>
+                  <p>盈利达到
+                    <span class="number-input with-unit inline"><input type="number" data-risk="breakeven.trigger" value="5" min="0.1" step="0.5" /><span>%</span></span>
+                    后，止损上移至成本价 +
+                    <span class="number-input with-unit inline"><input type="number" data-risk="breakeven.offset" value="0.2" min="0" step="0.1" /><span>%</span></span>
+                  </p>
+                </div>
+                <div class="risk-rule" data-rule="timeStop">
+                  <label class="check-label"><input type="checkbox" data-risk-on="timeStop" /><strong>时间止损</strong></label>
+                  <p>持仓满
+                    <span class="number-input inline"><input type="number" data-risk="timeStop.bars" value="20" min="1" step="1" /></span>
+                    根 K 线且收益低于
+                    <span class="number-input with-unit inline"><input type="number" data-risk="timeStop.minRet" value="2" step="0.5" /><span>%</span></span>
+                    时卖出</p>
+                </div>
+              </div>
+              <p class="muted small">多个止损同时生效时取最高的止损价；同一根 K 线同时触及止损与止盈时按止损处理（保守口径）。风控退出会在交易明细中标注退出原因。</p>
+            </div>
+            <ul class="research-errors" id="backtest-errors" hidden></ul>
+          </section>
+
+          <div class="pane-footer research-only">
+            <div class="footer-info">
+              <strong>回测区间</strong>
+              <span class="muted small" id="backtest-range-line"></span>
+            </div>
+            <div class="action-buttons">
+              <span class="blocked-reason muted" id="backtest-blocked-reason"></span>
+              <button type="button" class="primary" id="btn-run-backtest">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4l14 8-14 8z" /></svg>
+                用当前参数回测
+              </button>
+            </div>
+          </div>
+
+          <section class="flow-section research-only" id="backtest-result" hidden>
+            <header class="flow-head">
+              <span class="flow-no">3</span>
+              <div>
+                <h3>回测结果</h3>
+                <p class="muted small">结果满意：保存公式即可；不满意：调整参数重新回测，或进入参数优化批量寻找更优参数</p>
+              </div>
+              <div class="inline-actions flow-actions">
+                <button type="button" class="btn-sm" id="btn-goto-optimize">不满意，去参数优化</button>
+                <button type="button" class="primary btn-sm" id="btn-backtest-save">满意，保存公式</button>
+              </div>
+            </header>
+            <div class="notice warning" id="backtest-stale" hidden>
+              公式、参数、回测条件或行情已变化，下方结果已过期。
+              <button type="button" class="text-button" id="btn-backtest-rerun">重新回测</button>
+            </div>
+            <div class="evaluation-period" id="backtest-result-meta"></div>
+            <ul class="notice-list" id="backtest-notes" hidden></ul>
+            <div class="report" id="backtest-report"></div>
+          </section>
+        </div>
+
+        <!-- 参数优化 -->
+        <div class="research-pane" id="pane-config" role="tabpanel" hidden>
+          <div class="empty large-empty" id="optimize-unavailable" hidden>
+            <h3>当前公式无需参数优化</h3>
+            <p>只有同时调用了 BUY(条件,位置) 和 SELL(条件,位置) 的交易策略才需要回测与参数优化。纯绘图公式在「策略回测」中设置参数取值范围后即可保存。</p>
+          </div>
+          <div class="research-only">
+            <fieldset class="research-form" id="research-form">
+              <section class="flow-section">
+                <header class="flow-head">
+                  <span class="flow-no">1</span>
+                  <div>
+                    <h3>优化参数</h3>
+                    <p class="muted small">勾选要扫描的参数，扫描区间需落在公式允许范围内；未勾选的参数固定使用当前值</p>
+                  </div>
+                </header>
+                <div class="table-scroll">
+                  <table class="parameter-table">
+                    <thead>
+                      <tr>
+                        <th>参数 / 类型</th>
+                        <th>当前值</th>
+                        <th>允许范围</th>
+                        <th>参与优化</th>
+                        <th>扫描最小</th>
+                        <th>扫描最大</th>
+                        <th>步长</th>
+                        <th>取值数</th>
+                      </tr>
+                    </thead>
+                    <tbody id="param-opt-tbody"></tbody>
+                  </table>
+                </div>
+                <div class="constraint-section">
+                  <div class="section-heading">
+                    <h4>参数约束</h4>
+                    <button type="button" class="text-button" id="btn-add-constraint">+ 添加约束</button>
+                  </div>
+                  <p class="muted small" id="constraints-empty">没有额外约束。可设置短周期 &lt; 长周期，筛除无效组合。</p>
+                  <div id="constraints-list"></div>
+                </div>
+              </section>
+
+              <section class="flow-section">
+                <header class="flow-head">
+                  <span class="flow-no">2</span>
+                  <div>
+                    <h3>优化方法</h3>
+                    <p class="muted small">按时间顺序切分训练集与测试集，只在训练集上选优，测试集用于检验是否过拟合</p>
+                  </div>
+                </header>
+                <div class="fields four">
+                  <label class="field">
+                    <span>回测引擎</span>
+                    <select id="research-engine">
+                      <option value="vectorbt">VectorBT · 向量化</option>
+                      <option value="legacy">传统引擎 · 逐笔执行</option>
+                    </select>
+                  </label>
+                  <label class="field">
+                    <span>搜索算法</span>
+                    <select id="research-algorithm">
+                      <option value="grid">网格搜索</option>
+                      <option value="genetic">遗传算法（仅传统引擎）</option>
+                    </select>
+                  </label>
+                  <label class="field">
+                    <span>训练集优化目标</span>
+                    <select id="research-objective">
+                      <option value="sharpe">夏普比率</option>
+                      <option value="annual_return">年化收益率</option>
+                      <option value="calmar">卡玛比率</option>
+                    </select>
+                  </label>
+                  <label class="field">
+                    <span>训练 / 测试划分</span>
+                    <select id="research-train-ratio">
+                      <option value="0.7">70% 训练 / 30% 测试</option>
+                      <option value="1">100% 训练 / 无测试集</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="fields four">
+                  <label class="field">
+                    <span>合格条件 · 最少交易数</span>
+                    <input type="number" id="research-min-trades" min="0" max="10000" value="3" />
+                  </label>
+                  <label class="field">
+                    <span>合格条件 · 最大回撤上限</span>
+                    <div class="number-input with-unit">
+                      <input type="number" id="research-max-dd" min="1" max="100" value="30" />
+                      <span>%</span>
+                    </div>
+                  </label>
+                </div>
+                <p class="muted small field-note"><span id="engine-note"></span> 训练集不满足合格条件的参数组合判为「不合格」，不参与选优。</p>
+                <div class="genetic-settings" id="genetic-settings" hidden>
+                  <div class="sub-heading">遗传设置</div>
+                  <div class="fields four">
+                    <label class="field">
+                      <span>种群大小</span>
+                      <input type="number" id="ga-population" min="4" max="200" value="24" />
+                    </label>
+                    <label class="field">
+                      <span>迭代代数</span>
+                      <input type="number" id="ga-generations" min="1" max="100" value="6" />
+                    </label>
+                    <label class="field">
+                      <span>随机种子</span>
+                      <input type="number" id="ga-seed" min="0" value="42" />
+                    </label>
+                  </div>
+                  <p class="muted small">遗传搜索不保证遍历全部组合，仅在已评估候选中选优；相同种子可复现。</p>
+                </div>
+              </section>
+
+              <section class="flow-section">
+                <header class="flow-head">
+                  <span class="flow-no">3</span>
+                  <div>
+                    <h3>回测条件</h3>
+                    <p class="muted small">沿用「策略回测」中的设置</p>
+                  </div>
+                  <button type="button" class="text-button flow-actions" id="btn-edit-conditions">修改回测条件</button>
+                </header>
+                <dl class="rules-grid cond-summary" id="optimize-cond-summary"></dl>
+                <p class="notice warning risk-engine-notice" id="risk-engine-notice" hidden>
+                  回测条件启用了风控，VectorBT 向量化引擎不支持风控规则。
+                  <button type="button" class="text-button" id="btn-switch-legacy">切换到传统引擎</button>
+                </p>
+              </section>
+            </fieldset>
+
+            <ul class="research-errors" id="research-errors" hidden></ul>
+
+            <div class="pane-footer estimate-footer">
+              <div class="estimate-summary" id="estimate-box" data-level="idle">
+                <div class="estimate-figure"><strong id="estimate-count">—</strong><span>将评估的参数组</span></div>
+                <div class="estimate-figure"><strong id="estimate-time">—</strong><span>预计耗时（本机实测估算）</span></div>
+                <div class="estimate-text">
+                  <b id="estimate-line1">组合规模待估算</b>
+                  <span id="estimate-line2"></span>
+                </div>
+              </div>
+              <div class="action-buttons">
+                <span class="blocked-reason muted" id="research-blocked-reason"></span>
+                <button type="button" class="primary" id="btn-start-research">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 3h6v6H9zM9 15h6v6H9z" />
+                  </svg>
+                  开始优化
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 优化结果：列表 → 候选详情 -->
+        <div class="results-content" id="pane-results" role="tabpanel" hidden>
+          <div class="empty large-empty" id="results-empty">
+            <h3 id="results-empty-title">暂无优化结果</h3>
+            <p id="results-empty-desc"></p>
+          </div>
+          <div id="results-body" hidden>
+            <div class="snapshot-warning">
+              <div class="results-title">
+                <span class="tag teal" id="results-run-id">研究 —</span>
+                <span class="tag neutral" id="results-run-status">—</span>
+                <span class="muted small" id="results-meta"></span>
+              </div>
+              <div class="inline-actions">
+                <button type="button" class="text-button" id="btn-export-csv">导出候选（CSV）</button>
+                <button type="button" class="text-button" id="btn-export-snapshot">导出请求快照（JSON）</button>
+              </div>
+            </div>
+            <div class="notice info" id="results-history-notice" hidden></div>
+            <div class="evaluation-period" id="results-eval-period"></div>
+
+            <div id="results-list-view">
+              <div class="results-best" id="results-best"></div>
+              <div class="results-toolbar">
+                <span id="results-summary" class="muted small"></span>
+                <label class="check-label"><input type="checkbox" id="results-only-eligible" /> 只看合格候选</label>
+              </div>
+              <div class="table-scroll">
+                <table class="result-table">
+                  <thead id="results-thead"></thead>
+                  <tbody id="results-table-body"></tbody>
+                </table>
+              </div>
+              <div class="results-pager" id="results-pager"></div>
+              <p class="table-footnote" id="results-footnote"></p>
+            </div>
+
+            <div id="results-detail-view" hidden>
+              <div class="detail-nav">
+                <button type="button" class="btn-sm" id="btn-detail-back">‹ 返回结果列表</button>
+                <div class="candidate-title">
+                  <h3 id="details-title">候选 —</h3>
+                  <span class="tag" id="details-badge"></span>
+                  <span class="parameter-values" id="details-params-inline"></span>
+                </div>
+                <div class="inline-actions">
+                  <span class="muted small" id="details-position"></span>
+                  <button type="button" class="btn-sm" id="btn-cand-prev">‹ 上一个</button>
+                  <button type="button" class="btn-sm" id="btn-cand-next">下一个 ›</button>
+                </div>
+              </div>
+              <div class="detail-actions">
+                <div class="table-scroll compare-table">
+                  <table id="details-compare"></table>
+                </div>
+                <div class="inline-actions">
+                  <button type="button" class="primary btn-sm" id="btn-apply-to-chart">应用参数并回测</button>
+                </div>
+              </div>
+              <div class="notice warning" id="details-stale" hidden></div>
+              <div class="detail-period">
+                <div class="segmented" role="group" aria-label="详情评估区间">
+                  <button type="button" id="seg-train" aria-pressed="true">训练集</button>
+                  <button type="button" id="seg-test" aria-pressed="false">测试集</button>
+                </div>
+                <span class="muted" id="details-period-text"></span>
+              </div>
+              <div class="report" id="candidate-report"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 研究历史 -->
+        <div class="history-content" id="pane-history" role="tabpanel" hidden>
+          <div class="section-heading">
+            <div>
+              <h3>研究历史 <span class="count" id="history-title-count">0</span></h3>
+              <p class="muted small">每次参数优化保存独立请求快照（公式源码、行情口径与全部配置）。加载配置会覆盖当前草稿，但不会更改已保存的研究结果。最多保留最近 50 条。</p>
+            </div>
+            <button type="button" id="btn-refresh-history">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                <path d="M21 3v5h-5" />
+                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                <path d="M8 16H3v5" />
+              </svg>
+              刷新历史
+            </button>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>研究编号</th>
+                  <th>创建时间</th>
+                  <th>公式</th>
+                  <th>标的 · 周期</th>
+                  <th>引擎 / 算法</th>
+                  <th>目标 · 训练最优</th>
+                  <th>状态</th>
+                  <th>进度</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="history-table-body"></tbody>
+            </table>
+          </div>
+          <p class="muted small empty-row" id="history-empty">暂无研究历史，完成第一次参数优化后可在这里追溯。</p>
+        </div>
+      </section>
+      <footer class="app-footer">
+        <div>
+          <span>策略 · 研究工作台</span><span class="footer-divider">|</span
+          ><span>仅用于研究演示，不构成投资建议</span>
+        </div>
+        <div>
+          <span>流程：公式 → 图表核对信号 → 回测 → 保存 / 参数优化</span>
+          <details class="capabilities">
+            <summary>指标能力</summary>
+            <dl>
+              <div>
+                <dt>绘图（PLOT）</dt>
+                <dd>PLOT 表达式 ON MAIN|SUB [COLOR] [WIDTH] [LABEL] [STYLE]；MARK 条件 [LABEL] [POSITION] [COLOR]。</dd>
+              </div>
+              <div>
+                <dt>回测门控</dt>
+                <dd>调用了 BUY(条件,位置) 与 SELL(条件,位置) 的公式才可回测与参数优化；买入按持仓上限开仓（默认全仓），卖出全部平仓，信号先买后卖、一买一卖。</dd>
+              </div>
+              <div>
+                <dt>内置 MACD</dt>
+                <dd>参数当前值在「策略回测 › 公式参数」中调整。</dd>
+              </div>
+            </dl>
+          </details>
+        </div>
+      </footer>
+    </main>
+
+    <!-- 确认研究 -->
+    <dialog class="research-confirmation" id="dialog-confirm-research">
+      <h2>确认开始参数优化</h2>
+      <p class="muted small" id="confirm-sub">
+        以下为固定快照预览；确认后将创建本地模拟任务（不调用远端公式服务）。
+      </p>
+      <div class="confirmation-summary" id="confirm-summary-grid"></div>
+
+      <h3>参数与扫描区间</h3>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>参数</th>
+              <th>当前值</th>
+              <th>允许范围</th>
+              <th>本次扫描域</th>
+            </tr>
+          </thead>
+          <tbody id="confirm-param-tbody"></tbody>
+        </table>
+      </div>
+      <p class="small muted" id="confirm-constraints-line"></p>
+
+      <details id="confirm-source-details">
+        <summary>查看本次源码快照</summary>
+        <pre class="mono" id="confirm-source-pre"></pre>
+      </details>
+
+      <h3>预热与研究限制（说明）</h3>
+      <ul>
+        <li>预热窗口取参数最大取值（不少于 20 根 K 线），预热期内不买入；训练 / 测试按时间顺序切分，仅训练集选优。</li>
+        <li>只做多；按整手成交，遵循所选标的的 T+1 / T+0 与涨跌停规则；分红除权按图表所选复权口径处理。</li>
+        <li>本原型在浏览器内用公式的 BUY / SELL 信号回测，正式环境由后端计算引擎执行。</li>
+        <li>仅供研究交流，不构成任何投资建议。</li>
+      </ul>
+
+      <footer>
+        <span>按 Esc 关闭对话框，不创建任务。</span>
+        <button type="button" id="confirm-cancel">取消</button>
+        <button type="button" class="primary" id="confirm-ok">确认并开始优化</button>
+      </footer>
+    </dialog>
+
+    <div class="toast-region" id="toast-region" aria-live="polite"></div>
+
+    <!-- 公式名称与参数（文件栏齿轮） -->
+    <div class="modal-mask" id="formula-meta-mask" hidden role="presentation">
+      <div class="modal modal-sm formula-meta-modal" role="dialog" aria-labelledby="formula-meta-title" aria-modal="true">
+        <header class="modal-head">
+          <h3 id="formula-meta-title">公式名称与参数</h3>
+          <p class="modal-meta muted small">名称与各参数均为选填；最多 16 个。确定后写入源码顶部。</p>
+        </header>
+        <div class="modal-body">
+          <label class="formula-meta-name-field">
+            <span>名称</span>
+            <input type="text" id="formula-meta-name" placeholder="未命名公式" autocomplete="off" maxlength="64" />
+          </label>
+          <div class="formula-meta-params-head muted small">
+            <span>参数名</span>
+            <span>当前值</span>
+            <span aria-hidden="true"></span>
+          </div>
+          <div class="formula-meta-params" id="formula-meta-params"></div>
+          <button type="button" class="btn-sm formula-meta-add" id="formula-meta-add">新增参数</button>
+        </div>
+        <footer class="modal-foot">
+          <button type="button" id="formula-meta-cancel">取消</button>
+          <button type="button" class="primary" id="formula-meta-ok">确定</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- 插入函数 -->
+    <div class="modal-mask" id="fn-dialog-mask" hidden role="presentation">
+      <div class="modal modal-lg" role="dialog" aria-labelledby="fn-dialog-title" aria-modal="true">
+        <header class="modal-head">
+          <h3 id="fn-dialog-title">插入函数</h3>
+          <p class="modal-meta" id="fn-dialog-meta">双击列表项或点「插入」写入光标处</p>
+        </header>
+        <div class="modal-body modal-body-fn">
+          <div class="fn-toolbar">
+            <input type="search" id="fn-search" placeholder="搜索函数名 / 中文名 / 用法关键字" autocomplete="off" />
+          </div>
+          <div class="fn-dlg" id="fn-dlg" data-layout="wide">
+            <div class="fn-dlg-pick">
+              <div class="fn-cats" id="fn-cats"></div>
+              <div class="fn-list" id="fn-list"></div>
+            </div>
+            <div class="fn-detail" id="fn-detail"></div>
+          </div>
+        </div>
+        <footer class="modal-foot">
+          <button type="button" id="fn-dialog-close">取消</button>
+          <button type="button" class="primary" id="fn-dialog-insert">插入</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- K 线图表 · 内置指标选择（可搜索列表，适配指标扩容） -->
+    <div class="modal-mask" id="chart-ind-picker-mask" hidden role="presentation">
+      <div class="modal modal-md chart-ind-picker-modal" role="dialog" aria-labelledby="chart-ind-picker-title" aria-modal="true">
+        <header class="modal-head">
+          <h3 id="chart-ind-picker-title">选择主图指标</h3>
+          <p class="modal-meta muted small" id="chart-ind-picker-meta">支持名称 / 说明模糊搜索；公式指标由工作区「提交绘图」加载</p>
+        </header>
+        <div class="modal-body">
+          <input type="search" id="chart-ind-picker-search" class="ind-search" placeholder="搜索指标…" autocomplete="off" />
+          <div class="chart-ind-picker-list" id="chart-ind-picker-list" role="listbox"></div>
+        </div>
+        <footer class="modal-foot">
+          <button type="button" id="chart-ind-picker-close">关闭</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- 图表内置指标参数 -->
+    <div class="modal-mask" id="chart-ind-params-mask" hidden role="presentation">
+      <div class="modal modal-sm" role="dialog" aria-labelledby="chart-ind-params-title" aria-modal="true">
+        <header class="modal-head">
+          <h3 id="chart-ind-params-title">指标参数</h3>
+        </header>
+        <div class="modal-body">
+          <div class="ind-param-grid" id="chart-ind-param-fields"></div>
+          <p class="muted small">仅作用于当前 K 线图表，不修改公式编辑区与公式参数。</p>
+        </div>
+        <footer class="modal-foot">
+          <button type="button" id="chart-ind-params-close">取消</button>
+          <button type="button" class="primary" id="chart-ind-params-ok">确定</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- 引入指标 -->
+    <div class="modal-mask" id="ind-dialog-mask" hidden role="presentation">
+      <div class="modal modal-md modal-ind-import" role="dialog" aria-labelledby="ind-dialog-title" aria-modal="true">
+        <header class="modal-head">
+          <h3 id="ind-dialog-title">引入指标</h3>
+          <div class="ind-tabs ind-import-only-tabs" id="ind-import-tabs" role="tablist">
+            <button type="button" class="active" data-ind-tab="builtin" role="tab" aria-selected="true">内置指标</button>
+            <button type="button" data-ind-tab="custom" role="tab" aria-selected="false">自定义公式</button>
+          </div>
+        </header>
+        <div class="modal-body">
+          <input type="search" id="ind-search" class="ind-search" placeholder="模糊搜索指标 / 公式名称…" autocomplete="off" />
+          <div class="ind-dlg">
+            <div class="ind-list" id="ind-list"></div>
+            <div class="ind-detail" id="ind-detail"></div>
+          </div>
+        </div>
+        <footer class="modal-foot">
+          <button type="button" id="ind-dialog-close">取消</button>
+          <button type="button" class="primary" id="ind-dialog-ok">引入</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- 提交发布：保存为指标版本 -->
+    <div class="modal-mask" id="publish-mask" hidden role="presentation">
+      <div class="modal modal-lg publish-modal" role="dialog" aria-labelledby="publish-title" aria-modal="true">
+        <header class="modal-head">
+          <h3 id="publish-title">提交发布</h3>
+          <p class="modal-meta" id="publish-meta"></p>
+        </header>
+        <div class="modal-body publish-body">
+          <div id="publish-form">
+            <section class="pub-section">
+              <h4><span class="pub-no">1</span>发布前检查</h4>
+              <ul class="pub-checks" id="publish-checks"></ul>
+            </section>
+
+            <section class="pub-section">
+              <h4><span class="pub-no">2</span>指标信息</h4>
+              <div class="pub-grid">
+                <label class="field"><span>指标名称 *</span><input type="text" id="pub-name" maxlength="24" placeholder="后台与审核中使用的名称" /></label>
+                <label class="field"><span>指标编码</span><input type="text" id="pub-code" disabled /></label>
+                <label class="field"><span>分类</span><select id="pub-category"></select></label>
+                <label class="field"><span>C 端展示名</span><input type="text" id="pub-display" maxlength="16" placeholder="留空则同指标名称" /></label>
+                <label class="field pub-span2"><span>简介（C 端指标说明页展示）</span><input type="text" id="pub-summary" maxlength="80" placeholder="一句话说明指标用途与读法" /></label>
+                <label class="field"><span>可见范围</span><select id="pub-visibility"></select></label>
+              </div>
+            </section>
+
+            <section class="pub-section">
+              <h4><span class="pub-no">3</span>下发契约<small class="muted">C 端与云端计算按字段编码对齐，字段增删属于契约变更</small></h4>
+              <div class="table-scroll">
+                <table class="pub-table">
+                  <thead><tr><th>下发</th><th>字段编码</th><th>展示名</th><th>类型</th><th>默认窗格</th><th>精度</th></tr></thead>
+                  <tbody id="pub-outputs"></tbody>
+                </table>
+              </div>
+              <div class="pub-sub-head">
+                <strong>参数与 C 端可调范围</strong>
+                <span class="muted small">取自「策略回测 › 公式参数」的允许范围，C 端用户只能在此范围内调整</span>
+              </div>
+              <div class="table-scroll">
+                <table class="pub-table">
+                  <thead><tr><th>参数</th><th>类型</th><th>默认值</th><th>可调范围</th><th>步长</th></tr></thead>
+                  <tbody id="pub-params"></tbody>
+                </table>
+              </div>
+              <div class="notice info pub-diff" id="pub-diff" hidden></div>
+            </section>
+
+            <section class="pub-section">
+              <h4><span class="pub-no">4</span>云端计算配置<small class="muted">研发据此排期算力与历史回算</small></h4>
+              <div class="pub-calc">
+                <div class="field"><span>适用周期 *</span><div class="pub-checks-inline" id="pub-periods"></div></div>
+                <div class="pub-grid">
+                  <label class="field"><span>标的范围</span><select id="pub-universe"></select></label>
+                  <label class="field"><span>历史回溯（根）</span><input type="number" id="pub-lookback" min="60" max="5000" step="10" /></label>
+                </div>
+                <div class="field"><span>计算方式</span><div class="pub-checks-inline" id="pub-trigger"></div></div>
+              </div>
+            </section>
+
+            <section class="pub-section">
+              <h4><span class="pub-no">5</span>版本说明 *</h4>
+              <textarea id="pub-note" rows="2" maxlength="200" placeholder="本次变更内容，审核员与运营将据此判断影响面"></textarea>
+            </section>
+          </div>
+
+          <div class="publish-done" id="publish-done" hidden>
+            <div class="publish-done-icon" aria-hidden="true">✓</div>
+            <h3 id="publish-done-title">已提交审核</h3>
+            <p class="muted" id="publish-done-desc"></p>
+            <ol class="publish-flow" id="publish-done-steps"></ol>
+          </div>
+        </div>
+        <footer class="modal-foot publish-foot" id="publish-foot-form">
+          <span class="publish-foot-hint" id="publish-foot-hint"></span>
+          <button type="button" id="publish-cancel">取消</button>
+          <button type="button" id="btn-publish-save">仅保存版本</button>
+          <button type="button" class="primary" id="btn-publish-submit">保存并提交审核</button>
+        </footer>
+        <footer class="modal-foot" id="publish-foot-done" hidden>
+          <button type="button" id="btn-publish-close">继续编辑</button>
+          <button type="button" class="primary" id="btn-publish-goto">前往指标管理</button>
+        </footer>
+      </div>
+    </div>
+
+    <div id="formula-fn-tooltip" class="formula-fn-tooltip" hidden role="tooltip"></div>
+    <ul id="formula-ac-list" class="formula-ac-list" hidden role="listbox" aria-label="函数联想"></ul>
+
+    <!-- 使用普通脚本而非 ES Module，便于在本地通过 file:// 双击打开（无需本地 HTTP 端口） -->
+    <script src="./tdx-function-catalog.js?v=20261119b" defer></script>
+    <script src="./mai-lang.js?v=20261112o" defer></script>
+    <script src="./mai-function-catalog.js?v=20261112m" defer></script>
+    <script src="./tdx-formula-runtime.js?v=20261119b" defer></script>
+    <script src="./tdx-formula-engine.js?v=20261119c" defer></script>
+    <script src="./mai-compile.js?v=20261112m" defer></script>
+    <script src="./market-data.js?v=20251109" defer></script>
+    <script src="./market-data-1m.js?v=20251109" defer></script>
+    <script src="./market-data-30m.js?v=20251109ac" defer></script>
+    <script src="./market-data-multiframe.js?v=20251109ah" defer></script>
+    <script src="./quote-kline-api.js?v=20261112u" defer></script>
+    <script src="./chart-render.js?v=20261119b" defer></script>
+    <script src="./chart-pane-indicators.js?v=20251110b" defer></script>
+    <script src="./system-indicators.js" defer></script>
+    <script src="./formula-plot.js?v=20261112o" defer></script>
+    <script src="./formula-caret-tools.js?v=20251109y" defer></script>
+    <script src="./symbol-search.js?v=20261112c" defer></script>
+    <script src="./formula-editor-ui.js?v=20261119b" defer></script>
+    <script src="./research-engine.js?v=20261112m" defer></script>
+    <script src="./app.js?v=20261119b" defer></script>
+    <script src="./indicator-registry.js?v=20261119b" defer></script>
+    <script src="./workbench-publish.js?v=20261119b" defer></script>
+  </body>
+</html>
