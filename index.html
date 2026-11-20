@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#112639" />
     <title>量研 · 策略研究工作台</title>
     <link rel="stylesheet" href="./styles.css?v=20261112m" />
-    <link rel="stylesheet" href="./platform.css?v=20261119b" />
+    <link rel="stylesheet" href="./platform.css?v=20261120b" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">跳转到主内容</a>
@@ -39,11 +39,7 @@
         >
       </nav>
       <div class="topbar-right">
-        <span class="local-service"><i class="connected" aria-hidden="true"></i>本地工作区</span>
-        <label class="identity-switch" title="原型演示：切换身份查看不同角色的可用操作">
-          <span>当前身份</span>
-          <select id="identity-select" aria-label="切换演示身份"></select>
-        </label>
+        <div class="user-menu" id="user-menu"></div>
       </div>
     </header>
 
@@ -53,12 +49,6 @@
           <div class="eyebrow">RESEARCH / FORMULA LAB</div>
           <h1>让研究假设，成为可检验的策略。</h1>
           <p>本页为前端可交互原型：行情与回测结果为模拟数据，用于验证交互与信息架构。</p>
-        </div>
-        <div class="heading-actions">
-          <span class="privacy-note">
-            <span class="heading-dot" aria-hidden="true"></span>
-            不向公网发送您的公式草稿；导出与协作请使用团队约定流程。
-          </span>
         </div>
       </div>
 
@@ -193,7 +183,6 @@
           <div class="editor-filebar">
             <div class="editor-filebar-main">
               <span class="editor-filebar-label mono" id="editor-filebar-label" title="">未命名公式</span>
-              <button type="button" class="indicator-chip" id="filebar-indicator-chip" data-tone="none">未登记为指标</button>
               <button
                 type="button"
                 class="icon-button editor-filebar-gear"
@@ -257,14 +246,6 @@
                 </svg>
                 提交绘图
               </button>
-            <span class="formula-actions-sep" aria-hidden="true"></span>
-            <button type="button" class="publish-button" id="btn-publish" title="保存为指标版本，进入审核 → 研发接入 → 上架流程">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 19V5" />
-                <path d="M5 12l7-7 7 7" />
-              </svg>
-              提交发布
-            </button>
           </div>
         </section>
 
@@ -1130,87 +1111,21 @@
       </div>
     </div>
 
-    <!-- 提交发布：保存为指标版本 -->
-    <div class="modal-mask" id="publish-mask" hidden role="presentation">
-      <div class="modal modal-lg publish-modal" role="dialog" aria-labelledby="publish-title" aria-modal="true">
+    <!-- 保存 / 另存为：指标信息 -->
+    <div class="modal-mask" id="save-mask" hidden role="presentation">
+      <div class="modal modal-lg save-modal" role="dialog" aria-labelledby="save-title" aria-modal="true">
         <header class="modal-head">
-          <h3 id="publish-title">提交发布</h3>
-          <p class="modal-meta" id="publish-meta"></p>
+          <h3 id="save-title">保存指标</h3>
+          <p class="modal-meta" id="save-meta"></p>
         </header>
-        <div class="modal-body publish-body">
-          <div id="publish-form">
-            <section class="pub-section">
-              <h4><span class="pub-no">1</span>发布前检查</h4>
-              <ul class="pub-checks" id="publish-checks"></ul>
-            </section>
-
-            <section class="pub-section">
-              <h4><span class="pub-no">2</span>指标信息</h4>
-              <div class="pub-grid">
-                <label class="field"><span>指标名称 *</span><input type="text" id="pub-name" maxlength="24" placeholder="后台与审核中使用的名称" /></label>
-                <label class="field"><span>指标编码</span><input type="text" id="pub-code" disabled /></label>
-                <label class="field"><span>分类</span><select id="pub-category"></select></label>
-                <label class="field"><span>C 端展示名</span><input type="text" id="pub-display" maxlength="16" placeholder="留空则同指标名称" /></label>
-                <label class="field pub-span2"><span>简介（C 端指标说明页展示）</span><input type="text" id="pub-summary" maxlength="80" placeholder="一句话说明指标用途与读法" /></label>
-                <label class="field"><span>可见范围</span><select id="pub-visibility"></select></label>
-              </div>
-            </section>
-
-            <section class="pub-section">
-              <h4><span class="pub-no">3</span>下发契约<small class="muted">C 端与云端计算按字段编码对齐，字段增删属于契约变更</small></h4>
-              <div class="table-scroll">
-                <table class="pub-table">
-                  <thead><tr><th>下发</th><th>字段编码</th><th>展示名</th><th>类型</th><th>默认窗格</th><th>精度</th></tr></thead>
-                  <tbody id="pub-outputs"></tbody>
-                </table>
-              </div>
-              <div class="pub-sub-head">
-                <strong>参数与 C 端可调范围</strong>
-                <span class="muted small">取自「策略回测 › 公式参数」的允许范围，C 端用户只能在此范围内调整</span>
-              </div>
-              <div class="table-scroll">
-                <table class="pub-table">
-                  <thead><tr><th>参数</th><th>类型</th><th>默认值</th><th>可调范围</th><th>步长</th></tr></thead>
-                  <tbody id="pub-params"></tbody>
-                </table>
-              </div>
-              <div class="notice info pub-diff" id="pub-diff" hidden></div>
-            </section>
-
-            <section class="pub-section">
-              <h4><span class="pub-no">4</span>云端计算配置<small class="muted">研发据此排期算力与历史回算</small></h4>
-              <div class="pub-calc">
-                <div class="field"><span>适用周期 *</span><div class="pub-checks-inline" id="pub-periods"></div></div>
-                <div class="pub-grid">
-                  <label class="field"><span>标的范围</span><select id="pub-universe"></select></label>
-                  <label class="field"><span>历史回溯（根）</span><input type="number" id="pub-lookback" min="60" max="5000" step="10" /></label>
-                </div>
-                <div class="field"><span>计算方式</span><div class="pub-checks-inline" id="pub-trigger"></div></div>
-              </div>
-            </section>
-
-            <section class="pub-section">
-              <h4><span class="pub-no">5</span>版本说明 *</h4>
-              <textarea id="pub-note" rows="2" maxlength="200" placeholder="本次变更内容，审核员与运营将据此判断影响面"></textarea>
-            </section>
-          </div>
-
-          <div class="publish-done" id="publish-done" hidden>
-            <div class="publish-done-icon" aria-hidden="true">✓</div>
-            <h3 id="publish-done-title">已提交审核</h3>
-            <p class="muted" id="publish-done-desc"></p>
-            <ol class="publish-flow" id="publish-done-steps"></ol>
-          </div>
+        <div class="modal-body">
+          <p class="save-notice" id="save-notice" hidden></p>
+          <div id="save-form"></div>
         </div>
-        <footer class="modal-foot publish-foot" id="publish-foot-form">
-          <span class="publish-foot-hint" id="publish-foot-hint"></span>
-          <button type="button" id="publish-cancel">取消</button>
-          <button type="button" id="btn-publish-save">仅保存版本</button>
-          <button type="button" class="primary" id="btn-publish-submit">保存并提交审核</button>
-        </footer>
-        <footer class="modal-foot" id="publish-foot-done" hidden>
-          <button type="button" id="btn-publish-close">继续编辑</button>
-          <button type="button" class="primary" id="btn-publish-goto">前往指标管理</button>
+        <footer class="modal-foot">
+          <span class="save-foot-hint" id="save-foot-hint"></span>
+          <button type="button" id="save-cancel">取消</button>
+          <button type="button" class="primary" id="save-ok">保存</button>
         </footer>
       </div>
     </div>
@@ -1236,10 +1151,12 @@
     <script src="./formula-plot.js?v=20261112o" defer></script>
     <script src="./formula-caret-tools.js?v=20251109y" defer></script>
     <script src="./symbol-search.js?v=20261112c" defer></script>
-    <script src="./formula-editor-ui.js?v=20261119b" defer></script>
+    <script src="./indicator-registry.js?v=20261120d" defer></script>
+    <script src="./indicator-form.js?v=20261120b" defer></script>
+    <script src="./user-menu.js?v=20261120b" defer></script>
+    <script src="./formula-editor-ui.js?v=20261120b" defer></script>
     <script src="./research-engine.js?v=20261112m" defer></script>
-    <script src="./app.js?v=20261119b" defer></script>
-    <script src="./indicator-registry.js?v=20261119b" defer></script>
-    <script src="./workbench-publish.js?v=20261119b" defer></script>
+    <script src="./app.js?v=20261120b" defer></script>
+    <script src="./workbench-publish.js?v=20261120c" defer></script>
   </body>
 </html>
