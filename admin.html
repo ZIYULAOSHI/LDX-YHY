@@ -6,9 +6,9 @@
     <meta name="theme-color" content="#112639" />
     <title>量研 · 指标管理</title>
     <link rel="stylesheet" href="./styles.css?v=20261112m" />
-    <link rel="stylesheet" href="./platform.css?v=20261119b" />
+    <link rel="stylesheet" href="./platform.css?v=20261120b" />
   </head>
-  <body>
+  <body class="admin-body">
     <header class="topbar">
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">∿</div>
@@ -37,138 +37,79 @@
         >
       </nav>
       <div class="topbar-right">
-        <button type="button" class="text-button" id="btn-reset-demo" title="恢复演示数据" style="color: #8fb1c2">重置演示数据</button>
-        <label class="identity-switch" title="原型演示：切换身份查看不同角色的可用操作">
-          <span>当前身份</span>
-          <select id="identity-select" aria-label="切换演示身份"></select>
-        </label>
+        <div class="user-menu" id="user-menu"></div>
       </div>
     </header>
 
     <main class="admin-main">
-      <div class="page-heading">
+      <div class="page-heading admin-heading">
         <div>
-          <div class="eyebrow">INDICATOR OPS / 指标管理</div>
-          <h1>指标的版本、审核、上架与权限，在这里统一管理。</h1>
-          <p>工作台「提交发布」后的指标汇集于此：审核 → 研发接入云端计算 → 设为生产版本 → 按渠道上架 / 灰度 / 下架。</p>
+          <div class="eyebrow">INDICATOR ADMIN / 指标管理</div>
+          <h1>指标管理</h1>
+          <p>工作台「保存 / 另存为」的指标汇集于此，新指标默认下架；在这里上架到各应用、下架、查看与编辑。</p>
         </div>
         <div class="heading-actions">
-          <a href="./index.html"><button type="button" class="primary">+ 去工作台新建指标</button></a>
+          <button type="button" id="btn-logs"
+            ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6M8 13h8M8 17h5" /></svg>操作日志</button
+          >
+          <a class="btn-link primary" href="./index.html?new=1">+ 去工作台新建指标</a>
         </div>
       </div>
 
-      <div class="hint-banner" id="identity-banner"></div>
-
-      <div class="admin-tabs" role="tablist" aria-label="指标管理">
-        <button type="button" role="tab" data-tab="list" aria-selected="true">指标列表</button>
-        <button type="button" role="tab" data-tab="todo" aria-selected="false">我的待办 <span class="count" id="todo-count">0</span></button>
-        <button type="button" role="tab" data-tab="perm" aria-selected="false">权限管理</button>
-        <button type="button" role="tab" data-tab="logs" aria-selected="false">操作日志</button>
-      </div>
-
-      <!-- 指标列表 -->
-      <section id="pane-list" role="tabpanel">
-        <div class="kpi-row" id="kpi-row"></div>
-        <div class="panel">
-          <div class="filter-bar">
-            <input type="search" id="f-keyword" placeholder="搜索名称 / 编码 / 简介" />
-            <select id="f-status" aria-label="状态"></select>
-            <select id="f-category" aria-label="分类"></select>
-            <select id="f-channel" aria-label="渠道"></select>
-            <label class="check-label"><input type="checkbox" id="f-mine" /> 只看我负责 / 协作的</label>
-            <span class="spacer"></span>
-            <span class="muted small" id="f-summary"></span>
-          </div>
-          <div class="table-scroll" style="border: 0; border-radius: 0">
-            <table class="ind-table">
-              <thead>
-                <tr>
-                  <th>指标</th>
-                  <th>分类</th>
-                  <th>状态</th>
-                  <th>生产版本</th>
-                  <th>最新版本</th>
-                  <th>渠道（App · PC · Web · 小程序 · API）</th>
-                  <th>负责人</th>
-                  <th>更新时间</th>
-                </tr>
-              </thead>
-              <tbody id="ind-tbody"></tbody>
-            </table>
-          </div>
+      <section class="panel admin-panel" aria-label="指标列表">
+        <div class="filter-bar">
+          <input type="search" id="f-keyword" placeholder="搜索编码 / 名称 / 描述" />
+          <select id="f-type" aria-label="指标类型"></select>
+          <select id="f-status" aria-label="上下架状态"></select>
+          <select id="f-app" aria-label="应用"></select>
+          <select id="f-pricing" aria-label="收费"></select>
+          <button type="button" class="text-button" id="f-reset">重置筛选</button>
+          <span class="spacer"></span>
+          <span class="muted small" id="f-summary"></span>
         </div>
-      </section>
-
-      <!-- 待办 -->
-      <section id="pane-todo" role="tabpanel" hidden></section>
-
-      <!-- 权限 -->
-      <section id="pane-perm" role="tabpanel" hidden>
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-head"><h3>平台角色与能力</h3><span class="muted">角色决定「能做什么」，指标级权限决定「能对哪些指标做」</span></div>
-            <div class="table-scroll"><table class="perm-matrix" id="perm-matrix"></table></div>
-          </div>
-          <div class="card">
-            <div class="card-head"><h3>成员</h3><span class="muted">仅平台管理员可调整角色</span></div>
-            <div class="table-scroll"><table id="member-table"></table></div>
-            <div class="card-head" style="margin-top: 16px"><h3>指标级权限规则</h3></div>
-            <ul class="muted small" style="margin: 0; padding-left: 16px; line-height: 2">
-              <li><b>负责人</b>：创建者默认为负责人，可编辑、提交、管理协作者与可见范围、移交负责人。</li>
-              <li><b>编辑协作者</b>：可编辑、保存版本、提交审核；不能改权限。</li>
-              <li><b>只读协作者</b>：可查看源码与版本，不能修改。</li>
-              <li><b>可见范围</b>：仅负责人与协作者 / 本团队 / 平台全员；审核、研发、运营角色因职责可见全部。</li>
-              <li><b>职责分离</b>：提交人不能审核自己的版本；渠道上下架仅发布运营可操作。</li>
-              <li><b>不可变版本</b>：保存后的版本源码不可改，修改须生成新版本；生产版本只能被替换或回滚。</li>
-            </ul>
-          </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="ind-table">
+            <thead>
+              <tr>
+                <th class="col-code">指标编码</th>
+                <th class="col-name">指标名称</th>
+                <th class="col-desc">指标描述</th>
+                <th>指标类型</th>
+                <th>画线方法</th>
+                <th class="col-periods">适用周期</th>
+                <th>适用范围</th>
+                <th>收费</th>
+                <th>上下架状态</th>
+                <th class="col-apps">应用</th>
+                <th>创建人</th>
+                <th class="col-time sortable" data-sort="createdAt">创建时间<i class="sort-ind" aria-hidden="true"></i></th>
+                <th class="col-time sortable" data-sort="updatedAt">更新时间<i class="sort-ind" aria-hidden="true"></i></th>
+                <th class="col-ops">操作</th>
+              </tr>
+            </thead>
+            <tbody id="ind-tbody"></tbody>
+          </table>
         </div>
-      </section>
-
-      <!-- 日志 -->
-      <section id="pane-logs" role="tabpanel" hidden>
-        <div class="panel">
-          <div class="filter-bar">
-            <select id="log-filter-action" aria-label="操作类型"></select>
-            <select id="log-filter-ind" aria-label="指标"></select>
-            <span class="spacer"></span>
-            <span class="muted small">所有状态变更与权限变更均留痕，不可删除</span>
-          </div>
-          <div class="table-scroll" style="border: 0; border-radius: 0">
-            <table>
-              <thead><tr><th>时间</th><th>指标</th><th>操作</th><th>操作人</th><th>详情</th></tr></thead>
-              <tbody id="log-tbody"></tbody>
-            </table>
-          </div>
-        </div>
+        <div class="pager" id="ind-pager"></div>
       </section>
     </main>
 
-    <!-- 指标详情抽屉 -->
-    <div class="detail-overlay" id="detail-overlay" hidden>
-      <aside class="detail-drawer" role="dialog" aria-modal="true" aria-labelledby="detail-title">
-        <div class="detail-head">
-          <div class="detail-head-row">
-            <div>
-              <h2 id="detail-title"></h2>
-              <div class="detail-head-meta" id="detail-meta"></div>
-            </div>
-            <div class="detail-head-actions" id="detail-actions"></div>
-            <button type="button" class="icon-button" id="detail-close" aria-label="关闭">✕</button>
+    <!-- 查看 / 编辑 抽屉 -->
+    <div class="drawer-overlay" id="drawer-overlay" hidden>
+      <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+        <header class="drawer-head">
+          <div>
+            <h2 id="drawer-title"></h2>
+            <div class="drawer-meta" id="drawer-meta"></div>
           </div>
-          <div class="admin-tabs detail-tabs" role="tablist">
-            <button type="button" role="tab" data-dtab="overview" aria-selected="true">概览</button>
-            <button type="button" role="tab" data-dtab="versions" aria-selected="false">版本记录</button>
-            <button type="button" role="tab" data-dtab="channels" aria-selected="false">分发与上下架</button>
-            <button type="button" role="tab" data-dtab="acl" aria-selected="false">权限</button>
-            <button type="button" role="tab" data-dtab="logs" aria-selected="false">操作日志</button>
-          </div>
-        </div>
-        <div class="detail-body" id="detail-body"></div>
+          <button type="button" class="icon-button" id="drawer-close" aria-label="关闭">✕</button>
+        </header>
+        <div class="drawer-body" id="drawer-body"></div>
+        <footer class="drawer-foot" id="drawer-foot"></footer>
       </aside>
     </div>
 
-    <!-- 通用操作弹窗 -->
+    <!-- 上架 / 下架 确认 -->
     <div class="modal-mask" id="act-mask" hidden role="presentation">
       <div class="modal modal-md" role="dialog" aria-labelledby="act-title" aria-modal="true">
         <header class="modal-head">
@@ -183,9 +124,42 @@
       </div>
     </div>
 
+    <!-- 操作日志 -->
+    <div class="modal-mask" id="logs-mask" hidden role="presentation">
+      <div class="modal modal-lg logs-modal" role="dialog" aria-labelledby="logs-title" aria-modal="true">
+        <header class="modal-head logs-head">
+          <div>
+            <h3 id="logs-title">操作日志</h3>
+            <p class="modal-meta">保存、编辑、上下架均留痕</p>
+          </div>
+          <button type="button" class="icon-button" id="logs-close" aria-label="关闭">✕</button>
+        </header>
+        <div class="filter-bar">
+          <input type="search" id="log-keyword" placeholder="搜索编码 / 名称 / 详情" />
+          <select id="log-action" aria-label="操作类型"></select>
+        </div>
+        <div class="modal-body logs-body">
+          <table class="admin-table log-table">
+            <thead>
+              <tr><th class="col-time">时间</th><th>指标编码</th><th>指标名称</th><th>操作</th><th>操作人</th><th>详情</th></tr>
+            </thead>
+            <tbody id="log-tbody"></tbody>
+          </table>
+        </div>
+        <div class="pager" id="log-pager"></div>
+      </div>
+    </div>
+
     <div class="toast-region" id="toast-region" aria-live="polite"></div>
 
-    <script src="./indicator-registry.js?v=20261119b"></script>
-    <script src="./admin.js?v=20261119a"></script>
+    <script src="./tdx-function-catalog.js?v=20261119b"></script>
+    <script src="./tdx-formula-runtime.js?v=20261119b"></script>
+    <script src="./tdx-formula-engine.js?v=20261119c"></script>
+    <script src="./market-data.js?v=20251109"></script>
+    <script src="./chart-render.js?v=20261119b"></script>
+    <script src="./indicator-registry.js?v=20261120d"></script>
+    <script src="./indicator-form.js?v=20261120b"></script>
+    <script src="./user-menu.js?v=20261120b"></script>
+    <script src="./admin.js?v=20261120c"></script>
   </body>
 </html>
